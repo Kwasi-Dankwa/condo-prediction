@@ -11,7 +11,7 @@ The [data](https://www.nyc.gov/site/finance/property/property-rolling-sales-data
 
 ## Guiding Questions
 
-The purpose of this Guided Project is to explore the following questions:
+The purpose of this Project is to explore the following questions:
 
 * How Well does the Size of a Condominium in New York City Explain Sale Price?
 
