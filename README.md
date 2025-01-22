@@ -3,6 +3,10 @@
 # Information
 This is a linear regression project with aim of exploring condo prices in NYC. My interest was piqued after listening to a conversation on hot97 fm about the NYC housing crisis and as a student currently studying methods of data analysis in regression I felt this was a useful topic for practice.
 
+## Dataset
+
+The [data](https://www.nyc.gov/site/finance/property/property-rolling-sales-data.page) used was the Department of Finance’s rolling sales files list tax class 1, 2, and 4 properties that have sold in the last 12-month period in New York City in 2024. These files include the neighborhood, building type, square footage, and other data.
+
 # ASK phase
 
 ## Guiding Questions
