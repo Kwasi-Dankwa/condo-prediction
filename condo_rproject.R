@@ -65,3 +65,42 @@ NYC_property_sales <- NYC_property_sales %>%
   arrange(borough, neighborhood)
 
 write_csv(NYC_property_sales, "NYC_property_sales.csv")
+
+# Exploring bivariate relationships with scatterplot
+# looking for data with interesting points to select
+sort(table(NYC_property_sales$building_class_at_present))
+
+#filter data to include condos with elevators(miscellaneous) designated as D9
+NYC_condos <- NYC_property_sales %>%
+  filter(building_class_at_time_of_sale == "D9")
+
+# Create the scatterplot with customizations
+library(ggplot2)
+library(scales)
+
+ggplot(NYC_condos, aes(x = gross_square_feet, y = sale_price, color = borough)) +
+  geom_point(alpha = 0.5) +  # Add transparency to points
+  geom_smooth(method = "lm", se = FALSE) +  # Add linear trend line without confidence intervals
+  scale_y_continuous(labels = comma, limits = c(0, 80000000)) +  # Format y-axis without scientific notation and adjust limits
+  xlim(0,250000) +  # Adjust x-axis limits
+  theme_minimal() +  # Change to minimal theme
+  labs(
+    title = "Relationship between Gross Square Feet and Sale Price of NYC Condos",
+    x = "Gross Square Feet",
+    y = "Sale Price"
+  ) # Adding label
+
+
+# Zoom into data to better visualize for each borough
+ggplot(data = NYC_condos, 
+       aes(x = gross_square_feet, y = sale_price)) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~ borough, scales = "free", ncol = 2) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  labs(title = "Condominium Sale Price in NYC Generally Increases with Size",
+       x = "Size (Gross Square Feet)",
+       y = "Sale Price (USD)")
+
+
