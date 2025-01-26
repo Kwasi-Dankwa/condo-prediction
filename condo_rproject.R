@@ -103,4 +103,11 @@ ggplot(data = NYC_condos,
        x = "Size (Gross Square Feet)",
        y = "Sale Price (USD)")
 
+# Investigating manhattan outliers
+# filtering the apartments that increase as size increase
+manhattan_outliers <- NYC_condos %>% #storing in new df
+  filter(borough == "Manhattan") %>% #filtering by borough
+  filter(sale_price >= 20000000) %>%
+  arrange(sale_price)
+
 
