@@ -1,14 +1,16 @@
-# condo-prediction
+# one family dwelling-prediction
 
 # Information
-This is a linear regression project with aim of exploring condo prices in NYC. My interest was piqued after listening to a conversation on hot97 fm about the NYC housing crisis and as a student currently studying methods of data analysis in regression I felt this was a useful topic for practice.
+This is a linear regression project with aim of exploring one family attached or semi-detached residences in NYC. My interest was piqued after listening to a conversation on hot97 fm about the NYC housing crisis and as a student currently studying methods of data analysis in regression I felt this was a useful topic for practice.
 
 # Storyline
-I am a data analyst hired by a real estate investment firm. My task is to analyze the relationship between apartment size (gross square footage) and sale price in each borough to identify potential investment opportunities in elevator apartments.
+I am a data analyst hired by a real estate investment firm. My task is to analyze the relationship between one family dwelling home size (gross square footage) and sale price in each borough to identify potential investment opportunities in one family attached residences.
 
 ## Dataset
 
 The [data](https://www.nyc.gov/site/finance/property/property-rolling-sales-data.page) used was the Department of Finance’s rolling sales files list tax class 1, 2, and 4 properties that have sold in the last 12-month period in New York City in 2024. These files include the neighborhood, building type, square footage, and other data.
+
+I'm going to use R studio to answer these question
 
 # ASK phase
 
@@ -16,14 +18,20 @@ The [data](https://www.nyc.gov/site/finance/property/property-rolling-sales-data
 
 The purpose of this Project is to explore the following questions:
 
-* How Well does the Size of a Condominium in New York City Explain Sale Price?
+* How Well does the Size of a One family attached homes in New York City Explain Sale Price?
 
-* How well does the size of a condominium (measured in gross square feet) explain or predict sale price across New York City as a whole?
+* How well does the size of a One family attached homes(measured in gross square feet) explain or predict sale price across New York City as a whole?
 
-To answer this, we'll explore property sales data for all five boroughs combined.
+To answer this, I'll explore property sales data for all five boroughs combined.
+
+# Analysis phase
 
 * How well does the size of a condominium explain or predict sale price for each individual borough?
   
-For this question, we'll build, analyze, and compare linear models for each borough.
+For this question, I'll build, analyze, and compare linear models for each borough.
 
-Along the way, I'll also see how erroneous sale price entries influence our models, and we will devise methods to remove problematic entries.
+
+
+
+
+
