@@ -1,0 +1,252 @@
+---
+title: "Predicting One family Dwelling Sale Prices"
+author: "Kwasi Dankwa"
+output:
+  html_document:
+    df_print: paged
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+## This is a linear regression project with aim of exploring one family dwellings in NYC. My interest was piqued after listening to a conversation on hot97 fm about the NYC housing crisis and as a student currently studying methods of data analysis in regression I felt this was a useful topic for practice.
+
+```{r}
+# installing and loading packages
+
+library(readxl)
+library(dplyr)
+library(tidyverse)
+library(stringr)
+library(magrittr)
+library(tidyr)
+
+```
+
+
+```{r}
+# loading excel file for each borough
+bronx <- read_excel('rollingsales_bronx.xlsx', skip = 4)
+brooklyn <- read_excel('rollingsales_brooklyn.xlsx', skip = 4)
+manhattan <- read_excel('rollingsales_manhattan.xlsx', skip = 4)
+queens <- read_excel('rollingsales_queens.xlsx', skip = 4)
+statenisland <- read_excel('rollingsales_statenisland.xlsx', skip = 4)
+
+
+```
+
+
+```{r}
+# stack 5 data frames together
+NYC_property_sales <- bind_rows(bronx, brooklyn, manhattan, queens, statenisland)
+
+#removing data frames from each borough
+rm(brooklyn, bronx, manhattan, statenisland, queens)
+
+# Replace borough number with borough name, for clarity
+NYC_property_sales <- NYC_property_sales %>% 
+  mutate(BOROUGH = 
+  case_when(BOROUGH == 1 ~ "Manhattan",
+            BOROUGH == 2 ~ "Bronx",
+            BOROUGH == 3 ~ "Brooklyn",
+            BOROUGH == 4 ~ "Queens",
+            BOROUGH == 5 ~ "Staten_Island"))
+
+
+
+```
+
+
+```{r}
+
+#formatting data by converting column names to lower case-uniformity
+colnames(NYC_property_sales) %<>% str_replace_all("\\s", "_") %>% tolower()
+
+# convert capital columns to lower case
+NYC_property_sales <- NYC_property_sales %>% 
+  mutate(neighborhood = str_to_title(neighborhood)) %>% 
+  mutate(building_class_category = 
+           str_to_title(building_class_category)) %>% 
+  mutate(address = str_to_title(address)) 
+```
+
+
+```{r}
+
+# filtering data
+NYC_property_sales <- NYC_property_sales %>%
+  filter(sale_price > 10000) %>% #property exchanges between family members (assume threshold is 10000)
+  filter(gross_square_feet > 0) %>% #removing gross square footage that is 0
+  drop_na(gross_square_feet, sale_price)
+
+
+
+
+
+
+
+  
+  
+
+```
+
+
+
+```{r}
+## Arranging boroughs and neighborhoods observations alphabetically
+NYC_property_sales <- NYC_property_sales %>%
+  arrange(borough, neighborhood)
+
+write_csv(NYC_property_sales, "NYC_property_sales.csv")
+```
+
+
+```{r}
+library(readr)
+# Read in the CSV file we generated above
+NYC_property_sales <- read_csv('NYC_property_sales.csv')
+```
+
+# Exploring bivariate relationships with scatterplot
+```{r}
+# looking for data with interesting points to select
+sort(table(NYC_property_sales$building_class_at_present))
+
+#filter data to include condos with elevators(miscellaneous) designated as D9
+NYC_family_attached <- NYC_property_sales %>%
+  filter(building_class_at_time_of_sale == "A5")
+
+# Create the scatterplot with customizations
+library(ggplot2)
+library(scales)
+
+ggplot(NYC_family_attached, aes(x = gross_square_feet, y = sale_price, color = borough)) +
+  geom_point(alpha = 0.5) +  # Add transparency to points
+  geom_smooth(method = "lm", se = FALSE) +  # Add linear trend line without confidence intervals
+  scale_y_continuous(labels = comma, limits = c(0, 20000000)) +  # Format y-axis without scientific notation and adjust limits
+  xlim(0,50000) +  # Adjust x-axis limits
+  theme_minimal() +  # Change to minimal theme (optional)
+  labs(
+    title = "Relationship between Gross Square Feet and Sale Price of One family Attached Residences",
+    x = "Gross Square Feet",
+    y = "Sale Price"
+  )
+
+
+```
+
+```{r}
+# Zoom into data to better visualize for each borough
+ggplot(data = NYC_family_attached, 
+       aes(x = gross_square_feet, y = sale_price)) +
+  geom_point(alpha = 0.3) +
+  facet_wrap(~ borough, scales = "free", ncol = 2) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal() +
+  labs(title = "One Family Attached Homes in NYC Generally Increases with Size",
+       x = "Size (Gross Square Feet)",
+       y = "Sale Price (USD)")
+
+```
+
+# Interpretation of One Family Attached units
+
+* The graph shows the relationship between the size of one-family attached homes (measured in gross square feet) and their sale price in different boroughs of New York City (NYC).
+
+General Observations:
+
+* Positive Correlation: In all boroughs, there is a clear positive correlation between size and sale price. This means that larger homes generally sell for higher prices.
+Linear Trend: The blue lines represent the best-fit lines which indicate a roughly linear relationship between size and price in each borough.
+
+
+Borough-Specific Observations:
+
+* Manhattan: Homes in Manhattan have the highest sale prices overall and the steepest slope in the line, indicating a stronger relationship between size and price compared to other boroughs.
+* Brooklyn: Shows a similar trend to Manhattan, with high prices and a steep slope.
+* Queens: Also shows a positive correlation, but the slope is less steep than Manhattan and Brooklyn, suggesting that price increases less dramatically with size in Queens.
+Bronx: Homes in the Bronx have the lowest sale prices overall. The slope is less steep than Manhattan and Brooklyn, indicating a weaker relationship between size and price.
+Staten Island: Shows a positive correlation with a moderate slope, indicating a relationship between size and price that is less pronounced than in Manhattan and Brooklyn but more so than in the Bronx.
+
+
+# Linear Regression model for family dwellings in all boroughs combined
+```{r}
+NYC_family_attachedlm <- lm(sale_price ~ gross_square_feet, data = NYC_family_attached) 
+summary(NYC_family_attachedlm)
+
+```
+
+Gross square feet has a strong and significant positive relationship with sale price.
+However, the model explains only 21.71% of the variation, indicating that other important predictors might be useful in making predictions.
+
+Intercept is -487130.23, with slope being 866.67 this means that for each additional square foot, the predicted sale price increases by approximately $866.67.
+The p-value (<2e-16) is extremely small, indicating that the variable is highly significant.
+
+# Linear Regression for each borough
+```{r}
+# Create a list of models, one for each borough
+models <- NYC_family_attached %>%
+  group_by(borough) %>%
+  do(model = lm(sale_price ~ gross_square_feet, data = .))
+
+```
+
+
+```{r} 
+# view model summaries
+models %>% 
+  rowwise() %>%
+  mutate(
+    intercept = coef(model)[1], 
+    slope = coef(model)[2], 
+    r_squared = summary(model)$r.squared
+  ) %>%
+  select(borough, intercept, slope, r_squared)
+
+```
+
+# Insights
+
+## 1. Price per Square Foot (Slope)
+Manhattan has the highest price per square foot ($3,538.98), which aligns with expectations since it's the most expensive borough.
+Brooklyn comes next ($969.61), suggesting a high but significantly lower price per square foot compared to Manhattan.
+Queens ($338.06), Bronx ($132.47), and Staten Island ($157.03) have much lower price increases per square foot.
+
+
+## 2. Model Fit (R-Squared)
+Brooklyn (0.366): Best model fit, meaning gross_square_feet explains 36.6% of the variation in sale price.
+Queens (0.181), Manhattan (0.168), Staten Island (0.134), Bronx (0.065): Weaker fits, meaning other factors (like location, amenities, or building type) play a major role.
+
+## 3. Intercept Interpretation
+Brooklyn and Manhattan have large negative intercepts:
+This suggests that at very low square footage values, the model predicts unrealistically negative sale prices.
+This might indicate that a non-linear model (e.g., log-transformation or polynomial regression) would work better.
+
+Further Revisits of this model will try to incorporate adding additional predictor variables to make it a multiple linear regression model
+
+
+
+```{r}
+
+```
+
+```{r}
+
+
+```
+
+
+```{r}
+
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+```{r}
+
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
