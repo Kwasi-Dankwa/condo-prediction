@@ -194,8 +194,11 @@ models <- NYC_family_attached %>%
 
 
 ```{r} 
+install.packages('writexl')
+library(writexl)
+
 # view model summaries
-models %>% 
+results <- models %>% 
   rowwise() %>%
   mutate(
     intercept = coef(model)[1], 
@@ -203,6 +206,9 @@ models %>%
     r_squared = summary(model)$r.squared
   ) %>%
   select(borough, intercept, slope, r_squared)
+
+# Write results to an Excel file
+write_xlsx(results, path = "model_results.xlsx")
 
 ```
 
