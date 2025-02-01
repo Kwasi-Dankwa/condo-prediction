@@ -31,6 +31,34 @@ To answer this, I'll explore property sales data for all five boroughs combined.
 For this question, I'll build, analyze, and compare linear models for each borough.
 
 
+# Correlation between Sale Price and Size in Gross Square Feet
+![Sale Price vs Size](family_dwellings.png "Relationship between Gross Square Feet and Sale Price of One family Attached Residences")
+
+### General Trend:
+* Positive Correlation: In general, as Gross Square Feet increases, the Sale Price also increases, which aligns with expectations.
+
+![Linear Relationship for all Boroughs](dwellingsborough.png "Linear Relationship for all Boroughs")
+
+## Interpretation
+* The graph shows the relationship between the size of one-family attached homes (measured in gross square feet) and their sale price in different boroughs of New York City (NYC).
+
+### General Observations:
+
+* Positive Correlation: In all boroughs, there is a clear positive correlation between size and sale price. This means that larger homes generally sell for higher prices.
+Linear Trend: The blue lines represent the best-fit lines which indicate a roughly linear relationship between size and price in each borough.
+
+
+### Borough-Specific Observations:
+
+* Manhattan: Homes in Manhattan have the highest sale prices overall and the steepest slope in the line, indicating a stronger relationship between size and price compared to other boroughs.
+* Brooklyn: Shows a similar trend to Manhattan, with high prices and a steep slope.
+* Queens: Also shows a positive correlation, but the slope is less steep than Manhattan and Brooklyn, suggesting that price increases less dramatically with size in Queens.
+* Bronx: Homes in the Bronx have the lowest sale prices overall. The slope is less steep than Manhattan and Brooklyn, indicating a weaker relationship between size and price.
+* Staten Island: Shows a positive correlation with a moderate slope, indicating a relationship between size and price that is less pronounced than in Manhattan and Brooklyn but more so than in the Bronx.
+
+
+
+
 
 
 
